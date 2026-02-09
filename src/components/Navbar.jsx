@@ -42,7 +42,7 @@ const Navbar = ({ searchQuery, setSearchQuery, onSidebarToggle }) => {
             <div className="flex items-center gap-4">
                 <button
                     onClick={onSidebarToggle}
-                    className="p-2 hover:bg-youtube-hover rounded-full transition-colors hidden sm:block"
+                    className="p-2 hover:bg-youtube-hover rounded-full transition-colors"
                 >
                     <Menu className="w-6 h-6 text-white" />
                 </button>

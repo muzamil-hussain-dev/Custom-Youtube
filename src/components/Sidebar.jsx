@@ -14,7 +14,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             )}
 
             {/* Sidebar Container */}
-            <div className={`fixed top-0 left-0 bottom-0 w-[240px] bg-youtube-base z-50 transform transition-transform duration-200 border-r border-youtube-border/10 ${isOpen ? 'translate-x-0' : '-translate-x-full'
+            <div className={`fixed top-0 left-0 bottom-0 w-[240px] bg-youtube-base z-[60] transform transition-transform duration-200 border-r border-youtube-border/10 ${isOpen ? 'translate-x-0' : '-translate-x-full'
                 }`}>
                 <div className="flex items-center gap-4 px-4 h-14 border-b border-youtube-border/10">
                     <button onClick={onClose} className="p-2 hover:bg-youtube-hover rounded-full transition-colors">
