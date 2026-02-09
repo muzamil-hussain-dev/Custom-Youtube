@@ -1,12 +1,12 @@
 // Simplified video data - just IDs and Titles
 const videoList = [
-    { id: "1", videoId: "jfKfPfyJRdk", title: "Lofi Hip Hop Radio - Beats to Relax/Study to" },
-    { id: "2", videoId: "4xDzrJKXOOY", title: "Synthwave Radio - Beats to Chill/Game to" },
-    { id: "3", videoId: "M5QY2_8704o", title: "Chillstep Music for Programming / Cyberpunk / Coding" },
-    { id: "4", videoId: "lCOF9LN_Zxs", title: "Peaceful Piano Music" },
-    { id: "5", videoId: "Rb0UmrCXxVA", title: "Mozart - Classical Music for Brain Power" },
-    { id: "6", videoId: "Cnfj6QCGLyA", title: "Beautiful Relaxing Music - Peaceful Piano Music & Guitar Music" },
-    { id: "8", videoId: "Cnfj6QCGLyA", title: "Beautiful Relaxing Music - Peaceful Piano Music & Guitar Music (Copy)" }
+    // { id: "1", videoId: "jfKfPfyJRdk", title: "Lofi Hip Hop Radio - Beats to Relax/Study to" },
+    // { id: "2", videoId: "4xDzrJKXOOY", title: "Synthwave Radio - Beats to Chill/Game to" },
+    // { id: "3", videoId: "M5QY2_8704o", title: "Chillstep Music for Programming / Cyberpunk / Coding" },
+    // { id: "4", videoId: "lCOF9LN_Zxs", title: "Peaceful Piano Music" },
+    // { id: "5", videoId: "Rb0UmrCXxVA", title: "Mozart - Classical Music for Brain Power" },
+    // { id: "6", videoId: "Cnfj6QCGLyA", title: "Beautiful Relaxing Music - Peaceful Piano Music & Guitar Music" },
+    // { id: "8", videoId: "Cnfj6QCGLyA", title: "Beautiful Relaxing Music - Peaceful Piano Music & Guitar Music (Copy)" }
 ];
 
 export const videos = videoList.map(v => ({

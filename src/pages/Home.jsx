@@ -5,6 +5,7 @@ import VideoCard from '../components/VideoCard';
 const Home = ({ searchQuery }) => {
     const [allVideos, setAllVideos] = useState(localVideos);
     const [loading, setLoading] = useState(true);
+    const [activeFilter, setActiveFilter] = useState('All');
 
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3ppEf4tk2vYp9BMivxVf-gSWCC405swBoPibKpxlIfCpAd-u1ixPtM7IzwE0P3fPL/exec';
 
@@ -21,6 +22,23 @@ const Home = ({ searchQuery }) => {
                         // Handle both old format (string ID) and new format (object)
                         const id = typeof item === 'object' ? item.videoId : item;
                         const title = typeof item === 'object' ? item.title : '';
+                        const dateStr = typeof item === 'object' ? item.date : '';
+
+                        // Parse date for display and filtering
+                        let displayTime = "Just now";
+                        let uploadDate = null;
+
+                        if (dateStr) {
+                            uploadDate = new Date(dateStr);
+                            if (!isNaN(uploadDate.getTime())) {
+                                const diffInSeconds = Math.floor((new Date() - uploadDate) / 1000);
+                                if (diffInSeconds < 60) displayTime = "Just now";
+                                else if (diffInSeconds < 3600) displayTime = `${Math.floor(diffInSeconds / 60)} minutes ago`;
+                                else if (diffInSeconds < 86400) displayTime = `${Math.floor(diffInSeconds / 3600)} hours ago`;
+                                else if (diffInSeconds < 604800) displayTime = `${Math.floor(diffInSeconds / 86400)} days ago`;
+                                else displayTime = `${Math.floor(diffInSeconds / 604800)} weeks ago`;
+                            }
+                        }
 
                         return {
                             id: `sheet-${index}-${id}`,
@@ -28,7 +46,8 @@ const Home = ({ searchQuery }) => {
                             title: title || `Imported Video ${id}`,
                             channel: "Muzamil Hussain",
                             views: "New",
-                            timestamp: "Just now",
+                            timestamp: displayTime,
+                            uploadDate: uploadDate, // Store actual date object for filtering
                             thumbnail: `https://img.youtube.com/vi/${id}/maxresdefault.jpg`,
                             description: "Imported from Google Sheet"
                         };
@@ -50,19 +69,34 @@ const Home = ({ searchQuery }) => {
         fetchSheetVideos();
     }, []);
 
-    const filteredVideos = allVideos.filter(video =>
-        video.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        video.channel.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredVideos = allVideos.filter(video => {
+        const matchesSearch = video.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            video.channel.toLowerCase().includes(searchQuery.toLowerCase());
+
+        let matchesFilter = true;
+        if (activeFilter === 'Recently Uploaded') {
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+            if (video.uploadDate) {
+                matchesFilter = video.uploadDate >= sevenDaysAgo;
+            } else {
+                matchesFilter = false;
+            }
+        }
+
+        return matchesSearch && matchesFilter;
+    });
 
     return (
         <div className="p-4 md:p-6 overflow-y-auto h-full">
             {/* Sample filtering chips */}
             <div className="flex gap-3 mb-6 overflow-x-auto pb-2 scrollbar-hide">
-                {['All', 'Lofi', 'Mixes', 'Music', 'Live', 'Recently Uploaded'].map((chip, i) => (
+                {['All', 'Recently Uploaded'].map((chip) => (
                     <button
                         key={chip}
-                        className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${i === 0 ? 'bg-white text-black' : 'bg-youtube-secondary text-white hover:bg-youtube-hover'}`}
+                        onClick={() => setActiveFilter(chip)}
+                        className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${activeFilter === chip ? 'bg-white text-black' : 'bg-youtube-secondary text-white hover:bg-youtube-hover'}`}
                     >
                         {chip}
                     </button>
