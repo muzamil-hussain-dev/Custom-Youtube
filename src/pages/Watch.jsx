@@ -15,12 +15,64 @@ const Watch = () => {
 
     useEffect(() => {
         // If no videoId provided, default to first video
-        const targetId = videoId || videos[0].videoId;
+        if (!videoId) {
+            setVideo(videos[0]);
+            return;
+        }
+
+        let targetId = videoId;
+        let isSheetVideo = false;
+
+        // Check if it's a sheet video ID (format: sheet-index-youtubeId)
+        if (videoId.toString().startsWith('sheet-')) {
+            const parts = videoId.split('-');
+            if (parts.length >= 3) {
+                // The ID is the last part (or join the rest if ID has dashes, though YT IDs usually don't)
+                // Actually YT IDs can have dashes. 
+                // Our format is `sheet-${index}-${id}`. 
+                // So we should slice from the second dash.
+                // Let's safe parsed it: parts[0] is sheet, parts[1] is index.
+                // The rest is the ID.
+                targetId = parts.slice(2).join('-');
+                isSheetVideo = true;
+            }
+        }
+
         const foundVideo = videos.find(v => v.videoId === targetId);
-        setVideo(foundVideo || videos[0]);
+
+        if (foundVideo) {
+            setVideo(foundVideo);
+        } else if (isSheetVideo) {
+            // Create a temporary video object for sheet videos
+            // We don't have the title unless we fetch it, but usually the user comes from Home
+            // where we could pass state. For now, use a generic title or "Loading Title..."
+            // Ideally, we'd fetch the sheet here too, but let's make it actionable first.
+            setVideo({
+                id: videoId,
+                videoId: targetId,
+                title: "Imported Video", // Placeholder
+                channel: "Muzamil Hussain",
+                views: "New",
+                timestamp: "Just now",
+                description: "Video from Google Sheet",
+            });
+        } else {
+            // If not found locally and not explicitly marked as sheet, 
+            // assume the ID passed in URL IS the video ID (e.g. from VideoCard which uses videoId)
+            setVideo({
+                id: videoId,
+                videoId: targetId, // Use the parameter as the ID
+                title: "Playing Video", // Generic title since we don't have it
+                channel: "Muzamil Hussain",
+                views: "Watching",
+                timestamp: "Just now",
+                description: "Now playing",
+            });
+        }
+
         window.scrollTo(0, 0);
-        setIsSubscribed(false); // Reset subscription state on video change
-        setIsLiked(false); // Reset like state on video change
+        setIsSubscribed(false);
+        setIsLiked(false);
     }, [videoId]);
 
     const handleShare = () => {
